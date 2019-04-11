@@ -17,7 +17,13 @@ and we want a clean db
 def reset(request):
     
     Sale.objects.all().delete()
-    Country.objects.all().update(total_sales = 0)
+    #VehicleModel.objects.all().delete()
+    #Country.objects.all().delete()
+    #Make.objects.all().delete()
+    
+    make_dict = {}
+    country_dict = {}
+    model_dict = {}
 
     URL =  "https://my.api.mockaroo.com/karim.json?key=e6ac1da0"
     get_req = requests.get(url = URL)
@@ -25,32 +31,29 @@ def reset(request):
 
     for x in data:
         if ("make" in x):
-            make_query = Make.objects.filter(name__iexact = x["make"])
-            if not make_query:
+            if x["make"] not in make_dict:
                 m = Make(name = x["make"])
                 m.save()
+                make_dict[x["make"]]= m.pk
             else:
-                m = make_query[0]
-        else: m = None
+                m = Make.objects.get(pk=make_dict[x["make"]])
         if ("model" in x):
-            mod_query = VehicleModel.objects.filter(name__iexact = x["model"])
-            if not mod_query:
-                vm = VehicleModel(name = x["model"])
-                if m is not None:
-                    vm.model_make = m
+            if x["model"] not in model_dict:
+                vm = VehicleModel(name = x["model"], model_make = m)
                 vm.save()
+                model_dict[x["model"]]= vm.pk
             else:
-                vm = mod_query[0]
-        else: vm = None
-        country_query = Country.objects.filter(name__iexact = x["import_country"])
-        if not country_query:
+                vm = VehicleModel.objects.get(pk=model_dict[x["model"]])
+        if x["import_country"] not in country_dict:
             c = Country(name = x["import_country"], total_sales = x["sale_price"])
             c.save()
+            country_dict[x["import_country"]] = c.pk
         else:
-            c = country_query[0]
+            c = Country.objects.get(pk = country_dict[x["import_country"]])
             c.total_sales += x["sale_price"]
+        
         new_sale = Sale(country = c, sale_model = vm, sale_price = x["sale_price"])
         new_sale.save()
-    
-    return HttpResponse("change it up")
+
+    return HttpResponse("AHHHHHHH")
 
