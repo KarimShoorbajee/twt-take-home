@@ -17,10 +17,12 @@ and we want a clean db
 def world(request):
     
     Sale.objects.all().delete()
-    #VehicleModel.objects.all().delete()
-    #Country.objects.all().delete()
-    #Make.objects.all().delete()
+    VehicleModel.objects.all().delete()
+    Country.objects.all().delete()
+    Make.objects.all().delete()
     
+    print("everything has been deleted")
+
     make_dict = {}
     country_dict = {}
     model_dict = {}
