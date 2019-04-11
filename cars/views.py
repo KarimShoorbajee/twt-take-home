@@ -14,7 +14,7 @@ def index(request):
 Here when we retrieve the car data we clear the databases since this is new data
 and we want a clean db
 '''
-def world(request):
+def reset(request):
     
     Sale.objects.all().delete()
     VehicleModel.objects.all().delete()
