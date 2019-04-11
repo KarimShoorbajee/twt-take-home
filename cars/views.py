@@ -39,13 +39,17 @@ def world(request):
                 make_dict[x["make"]]= m.pk
             else:
                 m = Make.objects.get(pk=make_dict[x["make"]])
+        else: m = None
         if ("model" in x):
             if x["model"] not in model_dict:
-                vm = VehicleModel(name = x["model"], model_make = m)
+                vm = VehicleModel(name = x["model"])
+                if m is not None:
+                    vm.model_make = m
                 vm.save()
                 model_dict[x["model"]]= vm.pk
             else:
                 vm = VehicleModel.objects.get(pk=model_dict[x["model"]])
+        else: vm = None
         if x["import_country"] not in country_dict:
             c = Country(name = x["import_country"], total_sales = x["sale_price"])
             c.save()
@@ -56,6 +60,5 @@ def world(request):
         
         new_sale = Sale(country = c, sale_model = vm, sale_price = x["sale_price"])
         new_sale.save()
-
     return HttpResponse("AHHHHHHH")
 
