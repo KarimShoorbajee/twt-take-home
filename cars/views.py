@@ -17,15 +17,7 @@ and we want a clean db
 def world(request):
     
     Sale.objects.all().delete()
-    VehicleModel.objects.all().delete()
-    Country.objects.all().delete()
-    Make.objects.all().delete()
-    
-    print("everything has been deleted")
-
-    make_dict = {}
-    country_dict = {}
-    model_dict = {}
+    Country.objects.all().update(total_sales = 0)
 
     URL =  "https://my.api.mockaroo.com/karim.json?key=e6ac1da0"
     get_req = requests.get(url = URL)
@@ -33,32 +25,46 @@ def world(request):
 
     for x in data:
         if ("make" in x):
-            if x["make"] not in make_dict:
+            make_query = Make.objects.filter(name__iexact = x["make"])
+            if not make_query:
                 m = Make(name = x["make"])
                 m.save()
-                make_dict[x["make"]]= m.pk
             else:
-                m = Make.objects.get(pk=make_dict[x["make"]])
+                m = make_query[0]
         else: m = None
         if ("model" in x):
-            if x["model"] not in model_dict:
+            mod_query = VehicleModel.objects.filter(name__iexact = x["model"])
+            if not mod_query:
                 vm = VehicleModel(name = x["model"])
                 if m is not None:
                     vm.model_make = m
                 vm.save()
-                model_dict[x["model"]]= vm.pk
             else:
-                vm = VehicleModel.objects.get(pk=model_dict[x["model"]])
+                vm = mod_query[0]
         else: vm = None
-        if x["import_country"] not in country_dict:
+        country_query = Country.objects.filter(name__iexact = x["import_country"])
+        if not country_query:
             c = Country(name = x["import_country"], total_sales = x["sale_price"])
             c.save()
-            country_dict[x["import_country"]] = c.pk
         else:
-            c = Country.objects.get(pk = country_dict[x["import_country"]])
+            c = country_query[0]
             c.total_sales += x["sale_price"]
-        
         new_sale = Sale(country = c, sale_model = vm, sale_price = x["sale_price"])
         new_sale.save()
-    return HttpResponse("AHHHHHHH")
+
+        """
+        for mod in VehicleModel.objects.all():
+            if not mod.sale_set.all().exists():
+                mod.delete()
+        """
+        for country in Country.objects.all():
+            if not country.sale_set.all().exists():
+                country.delete()
+        '''
+        for make in Make.objects.all():
+            if not make.vehiclemodel_set.all().exists():
+                make.delete()
+        '''
+    
+    return HttpResponse("change it up")
 
