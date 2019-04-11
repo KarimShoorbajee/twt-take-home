@@ -51,20 +51,6 @@ def world(request):
             c.total_sales += x["sale_price"]
         new_sale = Sale(country = c, sale_model = vm, sale_price = x["sale_price"])
         new_sale.save()
-
-        """
-        for mod in VehicleModel.objects.all():
-            if not mod.sale_set.all().exists():
-                mod.delete()
-        """
-        for country in Country.objects.all():
-            if not country.sale_set.all().exists():
-                country.delete()
-        '''
-        for make in Make.objects.all():
-            if not make.vehiclemodel_set.all().exists():
-                make.delete()
-        '''
     
     return HttpResponse("change it up")
 
