@@ -15,7 +15,7 @@ class Country(models.Model):
 
 class VehicleModel(models.Model):
     name = models.CharField(max_length=20,blank = True)
-    model_make = models.ForeignKey(Make,on_delete=models.CASCADE, null = True)
+    model_make = models.ForeignKey(Make,on_delete=models.CASCADE)
     def __str__(self):
         return "{} {}".format(self.model_make, self.name)
 
