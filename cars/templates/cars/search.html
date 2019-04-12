@@ -1,0 +1,21 @@
+{% extends 'cars/base.html' %}
+{% block content %}
+<h3>Country results</h3>
+<ul>
+    {% for country in country_results %}
+        <a href={% url 'country' pk=country.pk %}><li>{{ country.name }}</li></a>
+    {% endfor %}
+</ul>
+<h3>Make results</h3>
+<ul>
+    {% for make in make_results %}
+    <a href={% url 'make' pk=make.pk %}><li>{{ make.name }}</li></a>
+    {% endfor %}
+</ul>
+<h3>Model results</h3>
+<ul>
+    {% for model in model_results %}
+        <a href={% url 'model' pk=model.pk %}><li>{{ model.name }}</li></a>
+    {% endfor %}
+</ul>
+{% endblock %}

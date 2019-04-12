@@ -1,0 +1,40 @@
+
+{% extends 'cars/base.html' %}
+
+{% block content %}
+<div class="container-text-center">
+    <div class = "row">
+        <div class ="col-sm-4">
+            <h2>Top Grossing Countries</h2>
+                <ol>
+                    {% for country in top_countries %}
+                        <li>
+                            <a href={% url 'country' pk=country.pk %}>{{ country.name }}</a>: ${{ country.total_sales }} 
+                        </li>
+                    {% endfor %}
+                </ol>
+        </div>
+        <div class ="col-sm-4">
+            <h2>Top Grossing Makes</h2>
+                <ol>
+                    {% for make in top_makes %}
+                        <li>
+                            <a href={% url 'make' pk=make.pk %}>{{ make.name }}</a>: ${{ make.total_sales }} 
+                        </li>
+                    {% endfor %}
+                </ol>
+        </div>
+        <div class ="col-sm-4">
+            <h2>Top Grossing Models</h2>
+                <ol>
+                    {% for model in top_models %}
+                        <li>
+                            <a href={% url 'model' pk=model.pk %}>{{ model.model_make }} {{ model.name }} </a>: ${{ model.total_sales }} 
+                        </li>
+                    {% endfor %}
+                </ol>
+            </h2>
+        </div>
+    </div>
+</div>
+{% endblock %}
